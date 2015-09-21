@@ -70,7 +70,7 @@ TARGET = main
 # use file-extension c for "c-only"-files
 SRC  = Compil/srcWinARM/Cstartup_SAM7.c
 SRC += swi_handler_user.c
-SRC += $(TARGET).c cdc_enumerate.c interrupt_Usart.c
+SRC += $(TARGET).c cdc_enumerate.c interrupt_Usart.c gps_time.c
 
 # List C source files here which must be compiled in ARM-Mode.
 # use file-extension c for "c-only"-files

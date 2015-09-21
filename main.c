@@ -93,7 +93,8 @@ int main ( void )
   //* Set led 1e LED's.
     AT91F_PIO_ClearOutput( AT91C_BASE_PIOA, AT91B_LED1 ) ;
     // Set Usart in interrupt
-    Usart_init();
+    Usart0_init();
+    Usart1_init();
    //* Set led all LED's.
     AT91F_PIO_ClearOutput( AT91C_BASE_PIOA, AT91B_LED_MASK ) ;
 
