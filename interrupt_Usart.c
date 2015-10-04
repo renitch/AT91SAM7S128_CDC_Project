@@ -22,14 +22,15 @@
 #include "cdc_enumerate.h"
 
 
-#define USART_INTERRUPT_LEVEL		1
+#define USART_INTERRUPT_LEVEL       1
 
 AT91PS_USART COM0;
 AT91PS_USART COM1;
-#define USART0_BAUD_RATE 		115200
-#define USART1_BAUD_RATE 		9600
 
-extern struct _AT91S_CDC 	pCDC;
+#define USART0_BAUD_RATE        9600
+#define USART1_BAUD_RATE        9600
+
+extern struct _AT91S_CDC    pCDC;
 
 static char usart0_buff_rx[100];
 static char usart0_buff_rx1[100];
@@ -65,105 +66,105 @@ void Trace_Toggel_LED (unsigned int Led)
 //*----------------------------------------------------------------------------
 void Usart0_c_irq_handler(void)
 {
-	AT91PS_USART USART_pt = COM0;
-	unsigned int status;
+    AT91PS_USART USART_pt = COM0;
+    unsigned int status;
 
-	//* get Usart status register and active interrupt
-	status = USART_pt->US_CSR ;
+    //* get Usart status register and active interrupt
+    status = USART_pt->US_CSR ;
         status &= USART_pt->US_IMR;
 
-	if ( status & AT91C_US_RXBUFF){
-	//* Toggel LED
- 	Trace_Toggel_LED( AT91B_LED2) ;
-	//* transfert the char to DBGU
-	 if ( usart0_first_buffer == 0){
- 	     COM0->US_RPR = (unsigned int) usart0_buff_rx1;
-	     COM0->US_RCR = 100;
- 	     pCDC.Write(&pCDC, usart0_buff_rx,100);
- 	     usart0_first_buffer =1;
-	   }else{
-	     COM0->US_RPR = (unsigned int) usart0_buff_rx;
-	     COM0->US_RCR = 100;
-	     pCDC.Write(&pCDC, usart0_buff_rx1,100);
-	     usart0_first_buffer=0;
-	   }
-	}
+    if ( status & AT91C_US_RXBUFF){
+    //* Toggel LED
+    Trace_Toggel_LED( AT91B_LED2) ;
+    //* transfert the char to DBGU
+     if ( usart0_first_buffer == 0){
+         COM0->US_RPR = (unsigned int) usart0_buff_rx1;
+         COM0->US_RCR = 100;
+         pCDC.Write(&pCDC, usart0_buff_rx,100);
+         usart0_first_buffer =1;
+       }else{
+         COM0->US_RPR = (unsigned int) usart0_buff_rx;
+         COM0->US_RCR = 100;
+         pCDC.Write(&pCDC, usart0_buff_rx1,100);
+         usart0_first_buffer=0;
+       }
+    }
 //* Check error
 
-	if ( status & AT91C_US_TIMEOUT){
-	 Trace_Toggel_LED( AT91B_LED2) ;
-	 status = 100 - COM0->US_RCR;
-	 if  (status !=0){
- 	   if ( usart0_first_buffer == 0){
-		COM0->US_RPR = (unsigned int) usart0_buff_rx1;
-		COM0->US_RCR = 100;
- 	        pCDC.Write(&pCDC, usart0_buff_rx,status);
- 	        usart0_first_buffer =1;
-	   }else{
-	        COM0->US_RPR = (unsigned int) usart0_buff_rx;
-	        COM0->US_RCR = 100;
-	        pCDC.Write(&pCDC, usart0_buff_rx1,status);
-	        usart0_first_buffer=0;
-	    }
+    if ( status & AT91C_US_TIMEOUT){
+     Trace_Toggel_LED( AT91B_LED2) ;
+     status = 100 - COM0->US_RCR;
+     if  (status !=0){
+       if ( usart0_first_buffer == 0){
+        COM0->US_RPR = (unsigned int) usart0_buff_rx1;
+        COM0->US_RCR = 100;
+            pCDC.Write(&pCDC, usart0_buff_rx,status);
+            usart0_first_buffer =1;
+       }else{
+            COM0->US_RPR = (unsigned int) usart0_buff_rx;
+            COM0->US_RCR = 100;
+            pCDC.Write(&pCDC, usart0_buff_rx1,status);
+            usart0_first_buffer=0;
+        }
             COM0->US_CR = AT91C_US_STTTO;
           }
-	}
-	//* Reset the satus bit for error
-	 USART_pt->US_CR = AT91C_US_RSTSTA;
+    }
+    //* Reset the satus bit for error
+     USART_pt->US_CR = AT91C_US_RSTSTA;
 }
 
 //*----------------------------------------------------------------------------
 void Usart1_c_irq_handler(void)
 {
-	AT91PS_USART USART_pt = COM1;
-	unsigned int status;
+    AT91PS_USART USART_pt = COM1;
+    unsigned int status;
 
-	//* get Usart status register and active interrupt
-	status = USART_pt->US_CSR ;
+    //* get Usart status register and active interrupt
+    status = USART_pt->US_CSR ;
         status &= USART_pt->US_IMR;
 
-	if ( status & AT91C_US_RXBUFF){
-	//* Toggel LED
- 	Trace_Toggel_LED( AT91B_LED2) ;
-	//* transfert the char to DBGU
-	 if ( usart1_first_buffer == 0){
- 	     COM1->US_RPR = (unsigned int) usart1_buff_rx1;
-	     COM1->US_RCR = 100;
- 	     //pCDC.Write(&pCDC, usart1_buff_rx,100);
- 	     analyseBufferForRMC(usart1_buff_rx,100);
- 	     usart1_first_buffer =1;
-	   }else{
-	     COM1->US_RPR = (unsigned int) usart1_buff_rx;
-	     COM1->US_RCR = 100;
-	     //pCDC.Write(&pCDC, usart1_buff_rx1,100);
-	     analyseBufferForRMC(usart1_buff_rx1,100);
-	     usart1_first_buffer=0;
-	   }
-	}
+    if ( status & AT91C_US_RXBUFF){
+    //* Toggel LED
+    Trace_Toggel_LED( AT91B_LED2) ;
+    //* transfert the char to DBGU
+     if ( usart1_first_buffer == 0){
+         COM1->US_RPR = (unsigned int) usart1_buff_rx1;
+         COM1->US_RCR = 100;
+         //pCDC.Write(&pCDC, usart1_buff_rx,100);
+         analyseBufferForRMC(usart1_buff_rx,100);
+         usart1_first_buffer =1;
+       }else{
+         COM1->US_RPR = (unsigned int) usart1_buff_rx;
+         COM1->US_RCR = 100;
+         //pCDC.Write(&pCDC, usart1_buff_rx1,100);
+         analyseBufferForRMC(usart1_buff_rx1,100);
+         usart1_first_buffer=0;
+       }
+    }
 //* Check error
 
-	if ( status & AT91C_US_TIMEOUT){
-	 Trace_Toggel_LED( AT91B_LED2) ;
-	 status = 100 - COM1->US_RCR;
-	 if  (status !=0){
- 	   if ( usart1_first_buffer == 0){
-		COM1->US_RPR = (unsigned int) usart1_buff_rx1;
-		COM1->US_RCR = 100;
- 	        //pCDC.Write(&pCDC, usart1_buff_rx,status);
- 	        analyseBufferForRMC(usart1_buff_rx,status);
- 	        usart1_first_buffer =1;
-	   }else{
-	        COM1->US_RPR = (unsigned int) usart1_buff_rx;
-	        COM1->US_RCR = 100;
-	        //pCDC.Write(&pCDC, usart1_buff_rx1,status);
-	        analyseBufferForRMC(usart1_buff_rx1,status);
-	        usart1_first_buffer=0;
-	    }
+    if ( status & AT91C_US_TIMEOUT){
+     Trace_Toggel_LED( AT91B_LED2) ;
+     status = 100 - COM1->US_RCR;
+     if  (status !=0){
+       if ( usart1_first_buffer == 0){
+        COM1->US_RPR = (unsigned int) usart1_buff_rx1;
+        COM1->US_RCR = 100;
+            //pCDC.Write(&pCDC, usart1_buff_rx,status);
+            analyseBufferForRMC(usart1_buff_rx,status);
+            usart1_first_buffer =1;
+       }else{
+            COM1->US_RPR = (unsigned int) usart1_buff_rx;
+            COM1->US_RCR = 100;
+            //pCDC.Write(&pCDC, usart1_buff_rx1,status);
+            analyseBufferForRMC(usart1_buff_rx1,status);
+            usart1_first_buffer=0;
+        }
             COM1->US_CR = AT91C_US_STTTO;
           }
-	}
-	//* Reset the satus bit for error
-	 USART_pt->US_CR = AT91C_US_RSTSTA;
+    }
+    //* Reset the satus bit for error
+     USART_pt->US_CR = AT91C_US_RSTSTA;
 }
 
 //*-------------------------- External Function -------------------------------
@@ -172,12 +173,18 @@ void Usart1_c_irq_handler(void)
 //* \fn    AT91F_US_Printk
 //* \brief This function is used to send a string through the US channel
 //*----------------------------------------------------------------------------
-void AT91F_US_Put( char *buffer) // \arg pointer to a string ending by \0
+void AT91F_US_Put( char *buffer, unsigned int length) // \arg pointer to a string ending by \0
+//void AT91F_US_Put( char *buffer) // \arg pointer to a string ending by \0
 {
-	while(*buffer != '\0') {
-		while (!AT91F_US_TxReady(COM0));
-		AT91F_US_PutChar(COM0, *buffer++);
-	}
+    /*while(*buffer != '\0') {
+        while (!AT91F_US_TxReady(COM0));
+        AT91F_US_PutChar(COM0, *buffer++);
+    }*/
+    //volatile int timeout = 1000;
+    for(unsigned int i =0; i < length; i++){
+        while (!AT91F_US_TxReady(COM0) /*&& timeout-- > 0*/);
+        AT91F_US_PutChar(COM0, buffer[i]);
+    }
 }
 
 //*----------------------------------------------------------------------------
@@ -193,10 +200,10 @@ void Usart0_init ( void )
     //* Define RXD and TXD as peripheral
     // Configure PIO controllers to periph mode
     AT91F_PIO_CfgPeriph(
-	 AT91C_BASE_PIOA, // PIO controller base address
-	 ((unsigned int) AT91C_PA5_RXD0    ) |
-	 ((unsigned int) AT91C_PA6_TXD0    ) , // Peripheral A
-	 0 ); // Peripheral B
+     AT91C_BASE_PIOA, // PIO controller base address
+     ((unsigned int) AT91C_PA5_RXD0    ) |
+     ((unsigned int) AT91C_PA6_TXD0    ) , // Peripheral A
+     0 ); // Peripheral B
 
     //* First, enable the clock of the PIOB
     AT91F_PMC_EnablePeriphClock ( AT91C_BASE_PMC, 1 << AT91C_ID_US0 ) ;
@@ -230,10 +237,10 @@ void Usart1_init ( void )
     //* Define RXD and TXD as peripheral
     // Configure PIO controllers to periph mode
     AT91F_PIO_CfgPeriph(
-	 AT91C_BASE_PIOA, // PIO controller base address
-	 ((unsigned int) AT91C_PA21_RXD1    ) |
-	 ((unsigned int) AT91C_PA22_TXD1    ) , // Peripheral A
-	 0 ); // Peripheral B
+     AT91C_BASE_PIOA, // PIO controller base address
+     ((unsigned int) AT91C_PA21_RXD1    ) |
+     ((unsigned int) AT91C_PA22_TXD1    ) , // Peripheral A
+     0 ); // Peripheral B
 
     //* First, enable the clock of the PIOB
     AT91F_PMC_EnablePeriphClock ( AT91C_BASE_PMC, 1 << AT91C_ID_US1 ) ;
